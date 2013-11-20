@@ -247,6 +247,8 @@ unsigned long csPluginAudit::GetUserCount(void)
 
     for ( ;; ) {
         if (getpwent_r(&pw, pwent_buffer, pwent_buffer_len, &pwp)) break;
+        if (pwp->pw_name == NULL || !strlen(pwp->pw_name)) continue;
+        if (pwp->pw_name[strlen(pwp->pw_name) - 1] == '$') continue;
         if (pwp->pw_uid < minuid || pwp->pw_uid > maxuid) continue; 
         users++;
     }
