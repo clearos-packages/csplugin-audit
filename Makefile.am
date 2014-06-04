@@ -1,9 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
+
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = csplugin-audit.conf
+EXTRA_DIST = autogen.sh csplugin-audit.conf
 
-AM_CFLAGS = ${CFLAGS}
 AM_CXXFLAGS = ${CXXFLAGS}
 
 lib_LTLIBRARIES = libcsplugin-audit.la
