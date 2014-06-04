@@ -433,11 +433,19 @@ void csPluginAudit::SaveTaskResult(struct csAuditTask *task)
     if (fd_json >= 0) {
 
         flock(fd_json, LOCK_EX);
-        ftruncate(fd_json, 0);
         lseek(fd_json, 0, SEEK_SET);
-        write(fd_json, (const void *)json.str().c_str(), json.str().length());
-        flock(fd_json, LOCK_UN);
 
+        if (ftruncate(fd_json, 0) != 0) {
+            csLog::Log(csLog::Warning, "%s: ftruncate: %s: %s",
+                name.c_str(), json.str().c_str(), strerror(errno));
+        }
+        if (write(fd_json,
+            (const void *)json.str().c_str(), json.str().length())) {
+            csLog::Log(csLog::Warning, "%s: write: %s: %s",
+                name.c_str(), json.str().c_str(), strerror(errno));
+        }
+
+        flock(fd_json, LOCK_UN);
         close(fd_json);
     }
 
@@ -494,8 +502,6 @@ void csPluginXmlParser::ParseElementOpen(csXmlTag *tag)
 
 void csPluginXmlParser::ParseElementClose(csXmlTag *tag)
 {
-    csPluginConf *_conf = static_cast<csPluginConf *>(conf);
-
     if ((*tag) == "sample") {
         if (!stack.size() || (*stack.back()) != "plugin")
             ParseError("unexpected tag: " + tag->GetName());
