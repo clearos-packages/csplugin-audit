@@ -1,0 +1,14 @@
+autom4te.cache/
+config.h
+config.h.in~
+config.log
+config.status
+csplugin-audit.spec
+.deps/
+*.la
+.libs/
+libtool
+*.lo
+Makefile
+*.o
+stamp-h1
