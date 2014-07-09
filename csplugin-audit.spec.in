@@ -1,7 +1,7 @@
 # ClearSync Audit Plugin RPM spec
 Name: @PACKAGE_TARNAME@
 Version: @PACKAGE_VERSION@
-Release: 4%{dist}
+Release: 5%{dist}
 Vendor: ClearFoundation
 License: GPL
 Group: System/Plugins
@@ -42,29 +42,20 @@ cp -v csplugin-audit.conf ${RPM_BUILD_ROOT}/%{_sysconfdir}/clearsync.d
 # Post install
 %post
 /sbin/ldconfig
+%if "0%{dist}" == "0.v6"
 /sbin/service clearsyncd condrestart 2>&1 || :
-
-# Add command(s) to sudo configuration
-#CHECK=`grep "^clearsync[[:space:]]*" /etc/sudoers`
-#if [ -z "$CHECK" ]; then
-#    echo "Cmnd_Alias CLEARSYNC = " >> /etc/sudoers
-#	echo "clearsync ALL=NOPASSWD: CLEARSYNC" >> /etc/sudoers
-#fi
-
-#CMD=/sbin/service
-#LINE=`grep "^Cmnd_Alias CLEARSYNC" /etc/sudoers 2>/dev/null`
-#CHECK=`echo $LINE, | grep $CMD,`
-#if [ -z "$CHECK" ]; then
-#	ESCAPE=`echo $CMD | sed 's/\//\\\\\//g'`
-#	sed -i -e "s/Cmnd_Alias CLEARSYNC.*=/Cmnd_Alias CLEARSYNC = $ESCAPE,/i" /etc/sudoers
-#	sed -i -e "s/[[:space:]]*,[[:space:]]*$//i" /etc/sudoers
-#	chmod 440 /etc/sudoers
-#fi
+%else
+/usr/bin/systemctl reload-or-restart clearsync.service -q
+%endif
 
 # Post uninstall
 %postun
 /sbin/ldconfig
+%if "0%{dist}" == "0.v6"
 /sbin/service clearsyncd condrestart 2>&1 || :
+%else
+/usr/bin/systemctl reload-or-restart clearsync.service -q
+%endif
 
 # Files
 %files
