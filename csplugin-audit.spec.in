@@ -10,6 +10,9 @@ Source: %{name}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}
 Requires: clearsync >= 1.1 /sbin/service
 BuildRequires: clearsync-devel >= 1.4
+BuildRequires: autoconf >= 2.63
+BuildRequires: automake
+BuildRequires: libtool
 BuildRequires: expat-devel
 Summary: ClearSync Audit plugin
 Requires(pre): /sbin/ldconfig
