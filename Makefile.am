@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = autogen.sh csplugin-audit.conf
+EXTRA_DIST = autogen.sh csplugin-audit.conf csplugin-audit.spec
 
 AM_CXXFLAGS = ${CXXFLAGS}
 

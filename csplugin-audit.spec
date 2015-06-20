@@ -1,0 +1,68 @@
+# ClearSync Audit Plugin RPM spec
+Name: csplugin-audit
+Version: 1.1
+Release: 6%{dist}
+Vendor: ClearFoundation
+License: GPL
+Group: System/Plugins
+Packager: ClearFoundation
+Source: %{name}-%{version}.tar.gz
+BuildRoot: /var/tmp/%{name}-%{version}
+Requires: clearsync >= 1.1 /sbin/service
+BuildRequires: clearsync-devel >= 1.4
+BuildRequires: autoconf >= 2.63
+BuildRequires: automake
+BuildRequires: libtool
+BuildRequires: expat-devel
+Summary: ClearSync Audit plugin
+Requires(pre): /sbin/ldconfig
+
+%description
+This is an Audit ClearSync plugin.
+Report bugs to: http://www.clearfoundation.com/docs/developer/bug_tracker/
+
+# Build
+%prep
+%setup -q
+./autogen.sh
+%{configure}
+
+%build
+make %{?_smp_mflags}
+
+# Install
+%install
+make install DESTDIR=$RPM_BUILD_ROOT
+rm -f ${RPM_BUILD_ROOT}/%{_libdir}/libcsplugin-audit.a
+rm -f ${RPM_BUILD_ROOT}/%{_libdir}/libcsplugin-audit.la
+mkdir -vp ${RPM_BUILD_ROOT}/%{_sysconfdir}/clearsync.d
+cp -v csplugin-audit.conf ${RPM_BUILD_ROOT}/%{_sysconfdir}/clearsync.d
+
+# Clean-up
+%clean
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+
+# Post install
+%post
+/sbin/ldconfig
+%if "0%{dist}" == "0.v6"
+/sbin/service clearsyncd condrestart 2>&1 || :
+%else
+/usr/bin/systemctl reload-or-restart clearsync.service -q
+%endif
+
+# Post uninstall
+%postun
+/sbin/ldconfig
+%if "0%{dist}" == "0.v6"
+/sbin/service clearsyncd condrestart 2>&1 || :
+%else
+/usr/bin/systemctl reload-or-restart clearsync.service -q
+%endif
+
+# Files
+%files
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/clearsync.d/csplugin-audit.conf
+%{_libdir}/libcsplugin-audit.so*
+
