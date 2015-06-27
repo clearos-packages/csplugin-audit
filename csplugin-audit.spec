@@ -1,7 +1,7 @@
 # ClearSync Audit Plugin RPM spec
 Name: csplugin-audit
 Version: 1.1
-Release: 6%{dist}
+Release: 7%{dist}
 Vendor: ClearFoundation
 License: GPL
 Group: System/Plugins
