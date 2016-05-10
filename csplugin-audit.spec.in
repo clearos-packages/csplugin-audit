@@ -1,7 +1,7 @@
 # ClearSync Audit Plugin RPM spec
 Name: @PACKAGE_TARNAME@
 Version: @PACKAGE_VERSION@
-Release: 7%{dist}
+Release: 8%{dist}
 Vendor: ClearFoundation
 License: GPL
 Group: System/Plugins
@@ -48,7 +48,7 @@ cp -v csplugin-audit.conf ${RPM_BUILD_ROOT}/%{_sysconfdir}/clearsync.d
 %if "0%{dist}" == "0.v6"
 /sbin/service clearsyncd condrestart 2>&1 || :
 %else
-/usr/bin/systemctl reload-or-restart clearsync.service -q
+/usr/bin/systemctl try-restart clearsync.service -q
 %endif
 
 # Post uninstall
@@ -57,7 +57,7 @@ cp -v csplugin-audit.conf ${RPM_BUILD_ROOT}/%{_sysconfdir}/clearsync.d
 %if "0%{dist}" == "0.v6"
 /sbin/service clearsyncd condrestart 2>&1 || :
 %else
-/usr/bin/systemctl reload-or-restart clearsync.service -q
+/usr/bin/systemctl try-restart clearsync.service -q
 %endif
 
 # Files
